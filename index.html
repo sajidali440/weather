@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+</head>
+<body onload="getWeatherByLocation()">
+  <button id="darkToggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+  <div class="app">
+    <h1>Weather</h1>
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="Enter city name" />
+      <button onclick="getWeather()">Search</button>
+    </div>
+
+    <div id="loader" class="loader" style="display:none;"></div>
+    <div id="weatherResult" class="weather-card"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
