@@ -1,0 +1,16 @@
+{
+  "name": "Sajidali Weather App",
+  "short_name": "Weather",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#3a7bd5",
+  "theme_color": "#1abc9c",
+  "description": "Live weather app using city or geolocation.",
+  "icons": [
+    {
+      "src": "https://openweathermap.org/img/wn/01d.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
