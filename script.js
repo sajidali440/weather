@@ -7,7 +7,7 @@ async function getWeather(city) {
   if (!city) {
     city = document.getElementById("cityInput").value.trim();
     if (!city) {
-      resultDiv.innerHTML = <div class="error">Please enter a city name.</div>;
+      resultDiv.innerHTML = `<div class="error">Please enter a city name.</div>`;
       return;
     }
   }
@@ -15,7 +15,7 @@ async function getWeather(city) {
   resultDiv.innerHTML = "";
   loader.style.display = "block";
 
-  const url = https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
   try {
     const response = await fetch(url);
@@ -26,7 +26,7 @@ async function getWeather(city) {
     const data = await response.json();
 
     const icon = data.weather[0].icon;
-    const iconUrl = http://openweathermap.org/img/wn/${icon}@2x.png;
+    const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
 
     resultDiv.innerHTML = `
       <h2>${data.name}, ${data.sys.country}</h2>
@@ -39,7 +39,7 @@ async function getWeather(city) {
     `;
   } catch (err) {
     loader.style.display = "none";
-    resultDiv.innerHTML = <div class="error">${err.message}</div>;
+    resultDiv.innerHTML = `<div class="error">${err.message}</div>`;
   }
 }
 
@@ -47,7 +47,7 @@ function getWeatherByLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async position => {
       const { latitude, longitude } = position.coords;
-      const url = https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric;
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
 
       const resultDiv = document.getElementById("weatherResult");
       const loader = document.getElementById("loader");
@@ -63,7 +63,7 @@ function getWeatherByLocation() {
 
         const data = await response.json();
         const icon = data.weather[0].icon;
-        const iconUrl = http://openweathermap.org/img/wn/${icon}@2x.png;
+        const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
 
         resultDiv.innerHTML = `
           <h2>${data.name}, ${data.sys.country}</h2>
@@ -76,7 +76,7 @@ function getWeatherByLocation() {
         `;
       } catch (err) {
         loader.style.display = "none";
-        resultDiv.innerHTML = <div class="error">${err.message}</div>;
+        resultDiv.innerHTML = `<div class="error">${err.message}</div>`;
       }
     }, () => {
       getWeather(); // fallback if location fails
