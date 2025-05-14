@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App | Sajidali</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="https://openweathermap.org/img/wn/01d.png" />
+
+  <!-- Meta Tags for Social Sharing -->
+  <meta name="description" content="Live weather app by Sajidali Momin. Get temperature, humidity, and more based on city or your location." />
+  <meta property="og:title" content="Weather App by Sajidali" />
+  <meta property="og:description" content="Check live weather with city search or auto-location!" />
+  <meta property="og:image" content="https://openweathermap.org/img/wn/01d.png" />
+  <meta property="og:url" content="https://sajidali440.github.io/weather" />
+</head>
+<body onload="getWeatherByLocation()">
+  <button id="darkToggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+  <div class="app">
+    <h1>Weather App</h1>
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="Enter city name" />
+      <button onclick="getWeather()">Search</button>
+    </div>
+
+    <div id="loader" class="loader" style="display:none;"></div>
+    <div id="weatherResult" class="weather-card"></div>
+
+    <!-- About Section -->
+    <section class="info-section">
+      <h2>About</h2>
+      <p>This app was built by <strong>Sajidali Momin</strong> using HTML, CSS, JavaScript, and the OpenWeatherMap API. It can fetch real-time weather using your current location or a city name you enter.</p>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="info-section">
+      <h2>Contact</h2>
+      <p>If you have any suggestions or want to collaborate, feel free to reach out!</p>
+      <ul>
+        <li>Email: mominsajidali.play@gmail.com</li>
+        <li>GitHub: <a href="https://github.com/sajidali440" target="_blank">sajidali440</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
