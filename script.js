@@ -1,84 +1,63 @@
 const apiKey = "48e3f57cfef26e750dfb4997ef7c54eb";
+const defaultCity = "Petlad";
 
-async function getWeather(city) {
-  const resultDiv = document.getElementById("weatherResult");
-  const loader = document.getElementById("loader");
+async function getWeatherData(city) {
+  const geoRes = await fetch(https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey});
+  const geoData = await geoRes.json();
+  if (!geoData.length) return alert("City not found.");
 
-  if (!city) {
-    city = document.getElementById("cityInput").value.trim();
-    if (!city) {
-      resultDiv.innerHTML = `<div class="error">Please enter a city name.</div>`;
-      return;
-    }
-  }
+  const { lat, lon, name } = geoData[0];
 
-  resultDiv.innerHTML = "";
-  loader.style.display = "block";
+  const weatherRes = await fetch(https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric);
+  const weatherData = await weatherRes.json();
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+  const aqiRes = await fetch(https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey});
+  const aqiData = await aqiRes.json();
 
-  try {
-    const response = await fetch(url);
-    loader.style.display = "none";
-
-    if (!response.ok) throw new Error("City not found");
-
-    const data = await response.json();
-    const icon = data.weather[0].icon;
-    const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-
-    resultDiv.innerHTML = `
-      <h2>${data.name}, ${data.sys.country}</h2>
-      <img src="${iconUrl}" alt="Weather Icon">
-      <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
-      <p>Temperature: ${data.main.temp}°C</p>
-      <p>Feels Like: ${data.main.feels_like}°C</p>
-      <p>Humidity: ${data.main.humidity}%</p>
-      <p>Wind Speed: ${data.wind.speed} m/s</p>
-    `;
-  } catch (err) {
-    loader.style.display = "none";
-    resultDiv.innerHTML = `<div class="error">${err.message}</div>`;
-  }
+  updateUI(weatherData, aqiData, name);
 }
 
-function getWeatherByLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async position => {
-      const { latitude, longitude } = position.coords;
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+function updateUI(data, aqi, cityName) {
+  document.querySelector(".location").textContent = cityName;
+  document.querySelector(".temperature").innerHTML = ${Math.round(data.current.temp)}&deg;;
+  document.querySelector(".weather-info").innerHTML =
+    ${data.current.weather[0].main} ${Math.round(data.daily[0].temp.min)}&deg;/${Math.round(data.daily[0].temp.max)}&deg; • Air quality: ${aqi.list[0].main.aqi} – <span class="aqi-text">${aqiLevel(aqi.list[0].main.aqi)}</span>;
 
-      const resultDiv = document.getElementById("weatherResult");
-      const loader = document.getElementById("loader");
+  const hourlyContainer = document.querySelector(".forecast-hourly");
+  hourlyContainer.innerHTML = "";
+  data.hourly.slice(0, 5).forEach(hour => {
+    const time = new Date(hour.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    hourlyContainer.innerHTML += <div class="hour-card">${time}<br><span>${Math.round(hour.temp)}&deg;</span></div>;
+  });
 
-      loader.style.display = "block";
-      resultDiv.innerHTML = "";
+  const dailyContainer = document.querySelector(".forecast-daily");
+  dailyContainer.innerHTML = "";
+  data.daily.slice(0, 5).forEach(day => {
+    const date = new Date(day.dt * 1000).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+    dailyContainer.innerHTML += <div class="day-card">${date}<br>${Math.round(day.temp.min)}&deg;/${Math.round(day.temp.max)}&deg;</div>;
+  });
 
-      try {
-        const response = await fetch(url);
-        loader.style.display = "none";
+  const stats = document.querySelectorAll(".stat span");
+  stats[0].textContent = data.current.uvi;
+  stats[1].textContent = ${Math.round(data.current.feels_like)}°;
+  stats[2].textContent = ${data.current.humidity}%;
+  stats[3].textContent = ${data.current.wind_speed} km/h;
+  stats[4].textContent = ${data.current.pressure} hPa;
+  stats[5].textContent = ${data.current.visibility / 1000} km;
 
-        if (!response.ok) throw new Error("Location not found");
+  const sunset = new Date(data.current.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const sunrise = new Date(data.current.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        const data = await response.json();
-        const icon = data.weather[0].icon;
-        const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-
-        resultDiv.innerHTML = `
-          <h2>${data.name}, ${data.sys.country}</h2>
-          <img src="${iconUrl}" alt="Weather Icon">
-          <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
-          <p>Temperature: ${data.main.temp}°C</p>
-          <p>Feels Like: ${data.main.feels_like}°C</p>
-          <p>Humidity: ${data.main.humidity}%</p>
-          <p>Wind Speed: ${data.wind.speed} m/s</p>
-        `;
-      } catch (err) {
-        loader.style.display = "none";
-        resultDiv.innerHTML = `<div class="error">${err.message}</div>`;
-      }
-    }, () => getWeather());
-  } else {
-    getWeather();
-  }
+  document.querySelector(".sun-times").innerHTML = `
+    <div>Sunset<br><span>${sunset}</span></div>
+    <div>Sunrise<br><span>${sunrise}</span></div>
+  `;
 }
+
+function aqiLevel(index) {
+  const levels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
+  return levels[index - 1] || "Unknown";
+}
+
+// Initial load
+getWeatherData(defaultCity);
