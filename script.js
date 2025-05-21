@@ -1,32 +1,84 @@
 const apiKey = "48e3f57cfef26e750dfb4997ef7c54eb";
-const defaultCity = "Petlad";
-const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&appid=${apiKey}&units=metric`;
 
-async function fetchWeather() {
+async function getWeather(city) {
+  const resultDiv = document.getElementById("weatherResult");
+  const loader = document.getElementById("loader");
+
+  if (!city) {
+    city = document.getElementById("cityInput").value.trim();
+    if (!city) {
+      resultDiv.innerHTML = `<div class="error">Please enter a city name.</div>`;
+      return;
+    }
+  }
+
+  resultDiv.innerHTML = "";
+  loader.style.display = "block";
+
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
   try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    const response = await fetch(url);
+    loader.style.display = "none";
 
-    document.getElementById("location").textContent = `Weather in ${data.name}`;
-    document.getElementById("temperature").textContent = `${data.main.temp}°C`;
-    document.getElementById("description").textContent = data.weather[0].description;
-    document.getElementById("humidity").textContent =` Humidity: ${data.main.humidity}%`;
-    document.getElementById("wind").textContent =` Wind: ${data.wind.speed} m/s`;
-    document.getElementById("feels").textContent =` Feels like: ${data.main.feels_like}°C`;
-  } catch (error) {
-    console.error("Error fetching weather data:", error);
-    document.getElementById("temperature").textContent = "Unable to load weather.";
+    if (!response.ok) throw new Error("City not found");
+
+    const data = await response.json();
+    const icon = data.weather[0].icon;
+    const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+
+    resultDiv.innerHTML = `
+      <h2>${data.name}, ${data.sys.country}</h2>
+      <img src="${iconUrl}" alt="Weather Icon">
+      <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
+      <p>Temperature: ${data.main.temp}°C</p>
+      <p>Feels Like: ${data.main.feels_like}°C</p>
+      <p>Humidity: ${data.main.humidity}%</p>
+      <p>Wind Speed: ${data.wind.speed} m/s</p>
+    `;
+  } catch (err) {
+    loader.style.display = "none";
+    resultDiv.innerHTML = `<div class="error">${err.message}</div>`;
   }
 }
 
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-}
+function getWeatherByLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async position => {
+      const { latitude, longitude } = position.coords;
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
 
-// Load theme from localStorage
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
-}
+      const resultDiv = document.getElementById("weatherResult");
+      const loader = document.getElementById("loader");
 
-fetchWeather();
+      loader.style.display = "block";
+      resultDiv.innerHTML = "";
+
+      try {
+        const response = await fetch(url);
+        loader.style.display = "none";
+
+        if (!response.ok) throw new Error("Location not found");
+
+        const data = await response.json();
+        const icon = data.weather[0].icon;
+        const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+
+        resultDiv.innerHTML = `
+          <h2>${data.name}, ${data.sys.country}</h2>
+          <img src="${iconUrl}" alt="Weather Icon">
+          <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
+          <p>Temperature: ${data.main.temp}°C</p>
+          <p>Feels Like: ${data.main.feels_like}°C</p>
+          <p>Humidity: ${data.main.humidity}%</p>
+          <p>Wind Speed: ${data.wind.speed} m/s</p>
+        `;
+      } catch (err) {
+        loader.style.display = "none";
+        resultDiv.innerHTML = `<div class="error">${err.message}</div>`;
+      }
+    }, () => getWeather());
+  } else {
+    getWeather();
+  }
+}
