@@ -3,39 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weather App</title>
+  <title>Modern Weather App</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <div class="top-section">
-      <div class="location">Loading...</div>
-      <div class="temperature">--°</div>
-      <div class="weather-info">Fetching weather data...</div>
-    </div>
-
-    <div class="forecast-section">
-      <h3>Hourly Forecast</h3>
-      <div class="forecast-hourly"></div>
-      <h3>Daily Forecast</h3>
-      <div class="forecast-daily"></div>
-    </div>
-
-    <div class="stats">
-      <div class="stat">UV Index<br><span>--</span></div>
-      <div class="stat">Feels Like<br><span>--</span></div>
-      <div class="stat">Humidity<br><span>--</span></div>
-      <div class="stat">Wind<br><span>--</span></div>
-      <div class="stat">Pressure<br><span>--</span></div>
-      <div class="stat">Visibility<br><span>--</span></div>
-    </div>
-
-    <div class="sun-times">
-      <div>Sunset<br><span>--</span></div>
-      <div>Sunrise<br><span>--</span></div>
-    </div>
+    <h1 id="location">Weather in Petlad</h1>
+    <h2 id="temperature">Loading...</h2>
+    <p id="description"></p>
+    <p id="humidity"></p>
+    <p id="wind"></p>
+    <p id="feels"></p>
   </div>
 
+  <button class="dark-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+  
   <script src="script.js"></script>
 </body>
 </html>
