@@ -15,6 +15,31 @@ window.onload = () => {
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark");
   }
+
+  // Geolocation attempt
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(async position => {
+      const { latitude, longitude } = position.coords;
+      showLoader();
+      try {
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${currentUnit}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Location not found");
+
+        const data = await response.json();
+        cityInput.value = data.name;
+        renderCurrentWeather(data);
+        fetchForecast(latitude, longitude);
+        setWeatherBackground(data.weather[0].main.toLowerCase());
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        hideLoader();
+      }
+    }, () => {
+      console.log("Location access denied or unavailable.");
+    });
+  }
 };
 
 themeToggle.addEventListener("click", () => {
@@ -130,7 +155,6 @@ function showError(message) {
   currentWeather.classList.remove("hidden");
 }
 
-/* Set background theme */
 function setWeatherBackground(weather) {
   document.body.classList.remove("sunny", "rainy", "cloudy", "storm", "clear");
 
