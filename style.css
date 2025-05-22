@@ -26,7 +26,7 @@ body {
   background-position: center;
 }
 
-/* Theme */
+/* Dark theme */
 body.dark {
   background: var(--bg-dark);
   color: var(--text-dark);
@@ -52,8 +52,7 @@ header h1 {
   display: flex;
   gap: 10px;
 }
-#themeToggle,
-#unitToggle {
+#themeToggle, #unitToggle {
   padding: 8px 10px;
   border: none;
   border-radius: 10px;
@@ -147,9 +146,7 @@ body.dark .card {
   margin: 20px auto;
 }
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 /* Footer */
@@ -168,19 +165,102 @@ footer a {
   display: none;
 }
 
-/* ========== WEATHER THEMES ========== */
+/* ========== WEATHER ANIMATIONS ========== */
+#weather-animation {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sun {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #ffdb70, #ffae00);
+  border-radius: 50%;
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  animation: moveSun 30s linear infinite;
+  opacity: 0;
+}
+@keyframes moveSun {
+  0% { top: 10%; left: 10%; }
+  50% { top: 5%; left: 50%; }
+  100% { top: 10%; left: 90%; }
+}
+
+.cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0;
+}
+.cloud1, .cloud2 {
+  width: 120px;
+  height: 60px;
+  top: 20%;
+  animation: moveCloud 60s linear infinite;
+}
+.cloud1 { left: -150px; }
+.cloud2 { left: 100%; animation-delay: 30s; }
+
+@keyframes moveCloud {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-200%); }
+}
+
+.rain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.2) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+  animation: fall 0.5s linear infinite;
+  opacity: 0;
+}
+@keyframes fall {
+  0% { background-position-y: 0; }
+  100% { background-position-y: 100px; }
+}
+
+.lightning {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  animation: flash 5s infinite;
+}
+@keyframes flash {
+  0%, 97%, 100% { opacity: 0; }
+  98% { opacity: 0.4; }
+  99% { opacity: 0.8; }
+}
+
+/* Background gradient classes for weather */
 body.sunny {
   background: linear-gradient(to top right, #fbd786, #f7797d);
-}
-body.rainy {
-  background: linear-gradient(to top right, #4e54c8, #8f94fb);
 }
 body.cloudy {
   background: linear-gradient(to top right, #bdc3c7, #2c3e50);
 }
-body.clear {
-  background: linear-gradient(to top right, #00c6ff, #0072ff);
+body.rainy {
+  background: linear-gradient(to top right, #4e54c8, #8f94fb);
 }
 body.storm {
   background: linear-gradient(to top right, #3a3a3a, #1f1f1f);
+}
+body.clear {
+  background: linear-gradient(to top right, #00c6ff, #0072ff);
 }
