@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modern Weather App</title>
+  <title>WeatherNow</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="https://openweathermap.org/img/wn/01d.png" />
@@ -11,32 +11,31 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header Section -->
+    <!-- Header -->
     <header>
-      <h1>🌦 WeatherNow</h1>
+      <h1>🌤 WeatherNow</h1>
       <div class="controls">
         <button id="themeToggle" title="Toggle Dark/Light Mode">🌓</button>
-        <select id="unitToggle" title="Change Temperature Unit">
+        <select id="unitToggle" title="Temperature Unit">
           <option value="metric">°C</option>
           <option value="imperial">°F</option>
         </select>
       </div>
     </header>
 
-    <!-- Search Section -->
+    <!-- Search -->
     <div class="search-bar">
-      <input type="text" id="cityInput" placeholder="Search for city or area..." />
-      <button id="searchBtn" title="Search by city">🔍</button>
-      <button id="locateBtn" title="Use current location">📍</button>
+      <input type="text" id="cityInput" placeholder="Enter a city..." />
+      <button id="searchBtn" title="Search">🔍</button>
     </div>
 
-    <!-- Loader Spinner -->
+    <!-- Loader -->
     <div id="loader" class="loader hidden"></div>
 
-    <!-- Current Weather Card -->
+    <!-- Weather Info -->
     <section id="currentWeather" class="card hidden"></section>
 
-    <!-- Forecast Section -->
+    <!-- Forecast -->
     <section id="forecast" class="forecast hidden">
       <h2>5-Day Forecast</h2>
       <div id="forecastCards" class="forecast-cards"></div>
@@ -48,7 +47,7 @@
     </footer>
   </div>
 
-  <!-- ✅ Service Worker Registration -->
+  <!-- Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
