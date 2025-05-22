@@ -1,30 +1,32 @@
-/* Root Styling */
+/* ========== BASE ========== */
 :root {
-  --bg-light: #e0f7fa;
-  --bg-dark: #121212;
-  --text-light: #111;
-  --text-dark: #eee;
   --primary: #1abc9c;
-  --card-bg-light: #ffffffdd;
-  --card-bg-dark: #1e1e1edd;
+  --bg-light: #f0f9ff;
+  --bg-dark: #1a1a1a;
+  --text-light: #111;
+  --text-dark: #f1f1f1;
   --border-radius: 16px;
   --transition: 0.3s ease;
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Reset & Base */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   background: var(--bg-light);
   color: var(--text-light);
+  transition: var(--transition);
   min-height: 100vh;
   padding: 20px;
-  transition: var(--transition);
+  background-size: cover;
+  background-position: center;
 }
+
+/* Theme */
 body.dark {
   background: var(--bg-dark);
   color: var(--text-dark);
@@ -50,20 +52,17 @@ header h1 {
   display: flex;
   gap: 10px;
 }
-#themeToggle, #unitToggle {
+#themeToggle,
+#unitToggle {
   padding: 8px 10px;
   border: none;
   border-radius: 10px;
   background: var(--primary);
   color: white;
   cursor: pointer;
-  transition: var(--transition);
-}
-#unitToggle {
-  background: #2980b9;
 }
 
-/* Search Bar */
+/* Search */
 .search-bar {
   display: flex;
   gap: 10px;
@@ -74,13 +73,13 @@ header h1 {
   padding: 12px;
   border-radius: var(--border-radius);
   border: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .search-bar button {
   padding: 12px;
-  border: none;
   background: var(--primary);
   color: white;
+  border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
@@ -89,36 +88,36 @@ header h1 {
   opacity: 0.85;
 }
 
-/* Weather Card */
+/* Card */
 .card {
-  background: var(--card-bg-light);
+  background: rgba(255, 255, 255, 0.85);
   border-radius: var(--border-radius);
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: var(--transition);
 }
 body.dark .card {
-  background: var(--card-bg-dark);
+  background: rgba(30, 30, 30, 0.9);
 }
 .card img {
-  width: 100px;
-}
-.card p {
-  margin: 10px 0;
-  font-size: 1rem;
+  width: 90px;
 }
 .card h2 {
   font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.card p {
+  margin: 10px 0;
 }
 
-/* Forecast Section */
+/* Forecast */
 .forecast {
   margin-top: 30px;
 }
 .forecast h2 {
-  margin-bottom: 15px;
   text-align: center;
+  margin-bottom: 10px;
 }
 .forecast-cards {
   display: flex;
@@ -126,14 +125,14 @@ body.dark .card {
   gap: 15px;
 }
 .forecast-cards::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
 }
 .forecast-cards::-webkit-scrollbar-thumb {
   background: var(--primary);
   border-radius: 4px;
 }
 .forecast-cards .card {
-  min-width: 120px;
+  min-width: 130px;
   flex-shrink: 0;
 }
 
@@ -148,7 +147,9 @@ body.dark .card {
   margin: 20px auto;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Footer */
@@ -165,4 +166,21 @@ footer a {
 /* Utility */
 .hidden {
   display: none;
+}
+
+/* ========== WEATHER THEMES ========== */
+body.sunny {
+  background: linear-gradient(to top right, #fbd786, #f7797d);
+}
+body.rainy {
+  background: linear-gradient(to top right, #4e54c8, #8f94fb);
+}
+body.cloudy {
+  background: linear-gradient(to top right, #bdc3c7, #2c3e50);
+}
+body.clear {
+  background: linear-gradient(to top right, #00c6ff, #0072ff);
+}
+body.storm {
+  background: linear-gradient(to top right, #3a3a3a, #1f1f1f);
 }
