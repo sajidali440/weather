@@ -11,7 +11,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <header>
       <h1>🌤 WeatherNow</h1>
       <div class="controls">
@@ -23,31 +22,25 @@
       </div>
     </header>
 
-    <!-- Search -->
     <div class="search-bar">
       <input type="text" id="cityInput" placeholder="Enter a city..." />
       <button id="searchBtn" title="Search">🔍</button>
     </div>
 
-    <!-- Loader -->
     <div id="loader" class="loader hidden"></div>
 
-    <!-- Weather Info -->
     <section id="currentWeather" class="card hidden"></section>
 
-    <!-- Forecast -->
     <section id="forecast" class="forecast hidden">
       <h2>5-Day Forecast</h2>
       <div id="forecastCards" class="forecast-cards"></div>
     </section>
 
-    <!-- Footer -->
     <footer>
       <p>Made by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank">GitHub</a></p>
     </footer>
   </div>
 
-  <!-- Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
