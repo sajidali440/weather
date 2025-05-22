@@ -3,16 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WeatherApp</title>
+  <title>WeatherNow</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="https://openweathermap.org/img/wn/01d.png" />
   <script defer src="script.js"></script>
 </head>
 <body>
+  <!-- Animated Weather Background -->
+  <div id="weather-animation">
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="rain"></div>
+    <div class="lightning"></div>
+  </div>
+
   <div class="container">
     <header>
-      <h1>🌤 WeatherApp</h1>
+      <h1>🌤 WeatherNow</h1>
       <div class="controls">
         <button id="themeToggle" title="Toggle Dark/Light Mode">🌓</button>
         <select id="unitToggle" title="Temperature Unit">
