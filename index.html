@@ -2,56 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weather App | Sajidali</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Weather App</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="https://openweathermap.org/img/wn/01d.png" />
-  <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-    }
-
-    window.onload = function () {
-      if (localStorage.getItem("theme") === "dark") {
-        document.body.classList.add("dark");
-      }
-      getWeatherByLocation();
-    };
-  </script>
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <button id="darkToggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <h1>🌦 WeatherNow</h1>
+      <div class="controls">
+        <button id="themeToggle" title="Toggle Dark/Light Mode">🌓</button>
+        <select id="unitToggle" title="Change Temperature Unit">
+          <option value="metric">°C</option>
+          <option value="imperial">°F</option>
+        </select>
+      </div>
+    </header>
 
-  <div class="app">
-    <h1>Weather App</h1>
-    <div class="search-box">
-      <input type="text" id="cityInput" placeholder="Enter city name" />
-      <button onclick="getWeather()">Search</button>
+    <!-- Search Section -->
+    <div class="search-bar">
+      <input type="text" id="cityInput" placeholder="Search for city or area..." />
+      <button id="searchBtn" title="Search by city">🔍</button>
+      <button id="locateBtn" title="Use current location">📍</button>
     </div>
 
-    <div id="loader" class="loader" style="display:none;"></div>
-    <div id="weatherResult" class="weather-card"></div>
+    <!-- Loader Spinner -->
+    <div id="loader" class="loader hidden"></div>
 
-    <section class="info-section">
-      <h2>About</h2>
-      <p>This app was built by <strong>Sajidali Momin</strong> using HTML, CSS, JavaScript, and the OpenWeather API. It supports city search, dark mode, geolocation, and App installation.</p>
+    <!-- Current Weather Card -->
+    <section id="currentWeather" class="card hidden"></section>
+
+    <!-- Forecast Section -->
+    <section id="forecast" class="forecast hidden">
+      <h2>5-Day Forecast</h2>
+      <div id="forecastCards" class="forecast-cards"></div>
     </section>
 
-    <section class="info-section">
-      <h2>Contact</h2>
-      <p>Email: mominsajidali.play@gmail.com</p>
-      <p>GitHub: <a href="https://github.com/sajidali440" target="_blank">sajidali440</a></p>
-    </section>
+    <!-- Footer -->
+    <footer>
+      <p>Made by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank">GitHub</a></p>
+    </footer>
   </div>
-
-  <script src="script.js"></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker Registered"));
-    }
-  </script>
 </body>
 </html>
