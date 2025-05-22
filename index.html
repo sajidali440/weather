@@ -47,5 +47,14 @@
       <p>Made by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank">GitHub</a></p>
     </footer>
   </div>
+
+  <!-- ✅ Service Worker Registration -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker Registered"))
+        .catch(err => console.error("Service Worker registration failed:", err));
+    }
+  </script>
 </body>
 </html>
