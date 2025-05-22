@@ -2,7 +2,6 @@ const apiKey = "48e3f57cfef26e750dfb4997ef7c54eb";
 
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
-const locateBtn = document.getElementById("locateBtn");
 const unitToggle = document.getElementById("unitToggle");
 const themeToggle = document.getElementById("themeToggle");
 const loader = document.getElementById("loader");
@@ -10,13 +9,12 @@ const currentWeather = document.getElementById("currentWeather");
 const forecastSection = document.getElementById("forecast");
 const forecastCards = document.getElementById("forecastCards");
 
-let currentUnit = unitToggle.value; // 'metric' or 'imperial'
+let currentUnit = unitToggle.value;
 
 window.onload = () => {
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark");
   }
-  fetchWeatherByLocation();
 };
 
 themeToggle.addEventListener("click", () => {
@@ -35,8 +33,6 @@ searchBtn.addEventListener("click", () => {
   if (city) fetchWeatherByCity(city);
 });
 
-locateBtn.addEventListener("click", fetchWeatherByLocation);
-
 async function fetchWeatherByCity(city) {
   showLoader();
   try {
@@ -47,35 +43,11 @@ async function fetchWeatherByCity(city) {
     const data = await response.json();
     renderCurrentWeather(data);
     fetchForecast(data.coord.lat, data.coord.lon);
+    setWeatherBackground(data.weather[0].main.toLowerCase());
   } catch (err) {
     showError(err.message);
   } finally {
     hideLoader();
-  }
-}
-
-function fetchWeatherByLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async position => {
-      const { latitude, longitude } = position.coords;
-      showLoader();
-      try {
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${currentUnit}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Location not found");
-
-        const data = await response.json();
-        cityInput.value = data.name;
-        renderCurrentWeather(data);
-        fetchForecast(latitude, longitude);
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        hideLoader();
-      }
-    }, () => showError("Location access denied."));
-  } else {
-    showError("Geolocation not supported.");
   }
 }
 
@@ -126,7 +98,11 @@ function extractDailyForecast(list) {
     const date = item.dt_txt.split(" ")[0];
     if (!dailyMap[date] && item.dt_txt.includes("12:00:00")) {
       dailyMap[date] = {
-        date: new Date(item.dt * 1000).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }),
+        date: new Date(item.dt * 1000).toLocaleDateString(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric"
+        }),
         temp: Math.round(item.main.temp),
         icon: item.weather[0].icon,
         main: item.weather[0].main
@@ -152,4 +128,21 @@ function hideLoader() {
 function showError(message) {
   currentWeather.innerHTML = `<p style="color: red;">${message}</p>`;
   currentWeather.classList.remove("hidden");
+}
+
+/* Set background theme */
+function setWeatherBackground(weather) {
+  document.body.classList.remove("sunny", "rainy", "cloudy", "storm", "clear");
+
+  if (weather.includes("cloud")) {
+    document.body.classList.add("cloudy");
+  } else if (weather.includes("rain") || weather.includes("drizzle")) {
+    document.body.classList.add("rainy");
+  } else if (weather.includes("clear")) {
+    document.body.classList.add("sunny");
+  } else if (weather.includes("storm") || weather.includes("thunder")) {
+    document.body.classList.add("storm");
+  } else {
+    document.body.classList.add("clear");
+  }
 }
