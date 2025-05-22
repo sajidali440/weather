@@ -16,7 +16,6 @@ window.onload = () => {
     document.body.classList.add("dark");
   }
 
-  // Geolocation attempt
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(async position => {
       const { latitude, longitude } = position.coords;
@@ -37,7 +36,7 @@ window.onload = () => {
         hideLoader();
       }
     }, () => {
-      console.log("Location access denied or unavailable.");
+      console.log("Geolocation denied.");
     });
   }
 };
@@ -156,16 +155,34 @@ function showError(message) {
 }
 
 function setWeatherBackground(weather) {
-  document.body.classList.remove("sunny", "rainy", "cloudy", "storm", "clear");
+  document.body.className = localStorage.getItem("theme") === "dark" ? "dark" : "";
 
-  if (weather.includes("cloud")) {
+  const sun = document.querySelector(".sun");
+  const clouds = document.querySelectorAll(".cloud");
+  const rain = document.querySelector(".rain");
+  const lightning = document.querySelector(".lightning");
+
+  sun.style.opacity = 0;
+  clouds.forEach(c => c.style.opacity = 0);
+  rain.style.opacity = 0;
+  lightning.style.opacity = 0;
+
+  if (weather.includes("clear")) {
+    document.body.classList.add("sunny");
+    sun.style.opacity = 1;
+  } else if (weather.includes("cloud")) {
     document.body.classList.add("cloudy");
+    sun.style.opacity = 0.5;
+    clouds.forEach(c => c.style.opacity = 0.6);
   } else if (weather.includes("rain") || weather.includes("drizzle")) {
     document.body.classList.add("rainy");
-  } else if (weather.includes("clear")) {
-    document.body.classList.add("sunny");
+    rain.style.opacity = 1;
+    clouds.forEach(c => c.style.opacity = 0.8);
   } else if (weather.includes("storm") || weather.includes("thunder")) {
     document.body.classList.add("storm");
+    rain.style.opacity = 1;
+    lightning.style.opacity = 1;
+    clouds.forEach(c => c.style.opacity = 1);
   } else {
     document.body.classList.add("clear");
   }
