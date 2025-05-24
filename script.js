@@ -16,7 +16,6 @@ window.onload = () => {
     document.body.classList.add("dark");
   }
 
-  // Geolocation attempt
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(async position => {
       const { latitude, longitude } = position.coords;
@@ -24,20 +23,16 @@ window.onload = () => {
       try {
         const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${currentUnit}`;
         const response = await fetch(url);
-        if (!response.ok) throw new Error("Location not found");
-
         const data = await response.json();
         cityInput.value = data.name;
         renderCurrentWeather(data);
         fetchForecast(latitude, longitude);
         setWeatherBackground(data.weather[0].main.toLowerCase());
       } catch (err) {
-        showError(err.message);
+        showError("Failed to load weather from your location.");
       } finally {
         hideLoader();
       }
-    }, () => {
-      console.log("Location access denied or unavailable.");
     });
   }
 };
@@ -63,14 +58,12 @@ async function fetchWeatherByCity(city) {
   try {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${currentUnit}`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error("City not found");
-
     const data = await response.json();
     renderCurrentWeather(data);
     fetchForecast(data.coord.lat, data.coord.lon);
     setWeatherBackground(data.weather[0].main.toLowerCase());
   } catch (err) {
-    showError(err.message);
+    showError("City not found. Try another.");
   } finally {
     hideLoader();
   }
@@ -83,14 +76,16 @@ function renderCurrentWeather(data) {
   currentWeather.innerHTML = `
     <h2>${data.name}, ${data.sys.country}</h2>
     <img src="${icon}" alt="${data.weather[0].description}" />
-    <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
-    <p>Temperature: ${data.main.temp}${unit}</p>
-    <p>Feels Like: ${data.main.feels_like}${unit}</p>
-    <p>Humidity: ${data.main.humidity}%</p>
-    <p>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</p>
-    <p>Pressure: ${data.main.pressure} hPa</p>
-    <p>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</p>
-    <p>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</p>
+    <ul class="weather-list">
+      <li><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</li>
+      <li>Temperature: ${data.main.temp}${unit}</li>
+      <li>Feels Like: ${data.main.feels_like}${unit}</li>
+      <li>Humidity: ${data.main.humidity}%</li>
+      <li>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</li>
+      <li>Pressure: ${data.main.pressure} hPa</li>
+      <li>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</li>
+      <li>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</li>
+    </ul>
   `;
   currentWeather.classList.remove("hidden");
 }
@@ -137,16 +132,9 @@ function extractDailyForecast(list) {
   return Object.values(dailyMap).slice(0, 5);
 }
 
-// CHANGED FUNCTION
 function formatTime(timestamp, timezoneOffset) {
   const date = new Date((timestamp + timezoneOffset) * 1000);
-  let hours = date.getUTCHours();
-  let minutes = date.getUTCMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // 0 becomes 12
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  return `${hours}:${minutes} ${ampm}`;
+  return date.toUTCString().match(/\d{2}:\d{2}/)[0];
 }
 
 function showLoader() {
@@ -154,25 +142,51 @@ function showLoader() {
   currentWeather.classList.add("hidden");
   forecastSection.classList.add("hidden");
 }
+
 function hideLoader() {
   loader.classList.add("hidden");
 }
+
 function showError(message) {
   currentWeather.innerHTML = `<p style="color: red;">${message}</p>`;
   currentWeather.classList.remove("hidden");
 }
 
 function setWeatherBackground(weather) {
-  document.body.classList.remove("sunny", "rainy", "cloudy", "storm", "clear");
+  document.body.classList.remove("sunny", "cloudy", "rainy", "storm", "clear");
 
-  if (weather.includes("cloud")) {
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+  } else {
+    document.body.classList.remove("dark");
+  }
+
+  const sun = document.querySelector(".sun");
+  const clouds = document.querySelectorAll(".cloud");
+  const rain = document.querySelector(".rain");
+  const lightning = document.querySelector(".lightning");
+
+  sun.style.opacity = 0;
+  clouds.forEach(c => c.style.opacity = 0);
+  rain.style.opacity = 0;
+  lightning.style.opacity = 0;
+
+  if (weather.includes("clear")) {
+    document.body.classList.add("sunny");
+    sun.style.opacity = 1;
+  } else if (weather.includes("cloud")) {
     document.body.classList.add("cloudy");
+    sun.style.opacity = 0.5;
+    clouds.forEach(c => c.style.opacity = 0.6);
   } else if (weather.includes("rain") || weather.includes("drizzle")) {
     document.body.classList.add("rainy");
-  } else if (weather.includes("clear")) {
-    document.body.classList.add("sunny");
+    rain.style.opacity = 1;
+    clouds.forEach(c => c.style.opacity = 0.8);
   } else if (weather.includes("storm") || weather.includes("thunder")) {
     document.body.classList.add("storm");
+    rain.style.opacity = 1;
+    lightning.style.opacity = 1;
+    clouds.forEach(c => c.style.opacity = 1);
   } else {
     document.body.classList.add("clear");
   }
