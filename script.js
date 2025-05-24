@@ -137,9 +137,16 @@ function extractDailyForecast(list) {
   return Object.values(dailyMap).slice(0, 5);
 }
 
+// CHANGED FUNCTION
 function formatTime(timestamp, timezoneOffset) {
   const date = new Date((timestamp + timezoneOffset) * 1000);
-  return date.toUTCString().match(/\d{2}:\d{2}/)[0];
+  let hours = date.getUTCHours();
+  let minutes = date.getUTCMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 becomes 12
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  return `${hours}:${minutes} ${ampm}`;
 }
 
 function showLoader() {
