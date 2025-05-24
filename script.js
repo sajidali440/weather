@@ -76,7 +76,7 @@ function renderCurrentWeather(data) {
   currentWeather.innerHTML = `
     <h2>${data.name}, ${data.sys.country}</h2>
     <img src="${icon}" alt="${data.weather[0].description}" />
-    <ol class="weather-list">
+    <ul class="weather-list">
       <li><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</li>
       <li>Temperature: ${data.main.temp}${unit}</li>
       <li>Feels Like: ${data.main.feels_like}${unit}</li>
@@ -85,7 +85,7 @@ function renderCurrentWeather(data) {
       <li>Pressure: ${data.main.pressure} hPa</li>
       <li>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</li>
       <li>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</li>
-    </ol>
+    </ul>
   `;
   currentWeather.classList.remove("hidden");
 }
