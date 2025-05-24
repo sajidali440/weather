@@ -83,14 +83,16 @@ function renderCurrentWeather(data) {
   currentWeather.innerHTML = `
     <h2>${data.name}, ${data.sys.country}</h2>
     <img src="${icon}" alt="${data.weather[0].description}" />
-    <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
-    <p>Temperature: ${data.main.temp}${unit}</p>
-    <p>Feels Like: ${data.main.feels_like}${unit}</p>
-    <p>Humidity: ${data.main.humidity}%</p>
-    <p>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</p>
-    <p>Pressure: ${data.main.pressure} hPa</p>
-    <p>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</p>
-    <p>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</p>
+    <ul class="weather-list">
+      <li><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</li>
+      <li>Temperature: ${data.main.temp}${unit}</li>
+      <li>Feels Like: ${data.main.feels_like}${unit}</li>
+      <li>Humidity: ${data.main.humidity}%</li>
+      <li>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</li>
+      <li>Pressure: ${data.main.pressure} hPa</li>
+      <li>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</li>
+      <li>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</li>
+    </ul>
   `;
   currentWeather.classList.remove("hidden");
 }
