@@ -16,7 +16,6 @@ window.onload = () => {
     document.body.classList.add("dark");
   }
 
-  // Geolocation attempt
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(async position => {
       const { latitude, longitude } = position.coords;
@@ -37,7 +36,7 @@ window.onload = () => {
         hideLoader();
       }
     }, () => {
-      console.log("Location access denied or unavailable.");
+      console.log("Geolocation denied.");
     });
   }
 };
@@ -83,16 +82,14 @@ function renderCurrentWeather(data) {
   currentWeather.innerHTML = `
     <h2>${data.name}, ${data.sys.country}</h2>
     <img src="${icon}" alt="${data.weather[0].description}" />
-    <ul class="weather-list">
-      <li><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</li>
-      <li>Temperature: ${data.main.temp}${unit}</li>
-      <li>Feels Like: ${data.main.feels_like}${unit}</li>
-      <li>Humidity: ${data.main.humidity}%</li>
-      <li>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</li>
-      <li>Pressure: ${data.main.pressure} hPa</li>
-      <li>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</li>
-      <li>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</li>
-    </ul>
+    <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
+    <p>Temperature: ${data.main.temp}${unit}</p>
+    <p>Feels Like: ${data.main.feels_like}${unit}</p>
+    <p>Humidity: ${data.main.humidity}%</p>
+    <p>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</p>
+    <p>Pressure: ${data.main.pressure} hPa</p>
+    <p>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</p>
+    <p>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</p>
   `;
   currentWeather.classList.remove("hidden");
 }
@@ -139,16 +136,9 @@ function extractDailyForecast(list) {
   return Object.values(dailyMap).slice(0, 5);
 }
 
-// UPDATED: 12-hour format with AM/PM
 function formatTime(timestamp, timezoneOffset) {
   const date = new Date((timestamp + timezoneOffset) * 1000);
-  let hours = date.getUTCHours();
-  let minutes = date.getUTCMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  const minutesStr = minutes < 10 ? '0' + minutes : minutes;
-  return `${hours}:${minutesStr} ${ampm}`;
+  return date.toUTCString().match(/\d{2}:\d{2}/)[0];
 }
 
 function showLoader() {
@@ -165,16 +155,34 @@ function showError(message) {
 }
 
 function setWeatherBackground(weather) {
-  document.body.classList.remove("sunny", "rainy", "cloudy", "storm", "clear");
+  document.body.className = localStorage.getItem("theme") === "dark" ? "dark" : "";
 
-  if (weather.includes("cloud")) {
+  const sun = document.querySelector(".sun");
+  const clouds = document.querySelectorAll(".cloud");
+  const rain = document.querySelector(".rain");
+  const lightning = document.querySelector(".lightning");
+
+  sun.style.opacity = 0;
+  clouds.forEach(c => c.style.opacity = 0);
+  rain.style.opacity = 0;
+  lightning.style.opacity = 0;
+
+  if (weather.includes("clear")) {
+    document.body.classList.add("sunny");
+    sun.style.opacity = 1;
+  } else if (weather.includes("cloud")) {
     document.body.classList.add("cloudy");
+    sun.style.opacity = 0.5;
+    clouds.forEach(c => c.style.opacity = 0.6);
   } else if (weather.includes("rain") || weather.includes("drizzle")) {
     document.body.classList.add("rainy");
-  } else if (weather.includes("clear")) {
-    document.body.classList.add("sunny");
+    rain.style.opacity = 1;
+    clouds.forEach(c => c.style.opacity = 0.8);
   } else if (weather.includes("storm") || weather.includes("thunder")) {
     document.body.classList.add("storm");
+    rain.style.opacity = 1;
+    lightning.style.opacity = 1;
+    clouds.forEach(c => c.style.opacity = 1);
   } else {
     document.body.classList.add("clear");
   }
