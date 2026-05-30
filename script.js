@@ -160,14 +160,9 @@ function showError(message) {
 }
 
 function setWeatherBackground(weather) {
+  // Reset all
   document.body.classList.remove("sunny", "cloudy", "rainy", "storm", "clear");
-
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-  } else {
-    document.body.classList.remove("dark");
-  }
-
+  
   const sun = document.querySelector(".sun");
   const clouds = document.querySelectorAll(".cloud");
   const rain = document.querySelector(".rain");
@@ -178,23 +173,30 @@ function setWeatherBackground(weather) {
   rain.style.opacity = 0;
   lightning.style.opacity = 0;
 
-  if (weather.includes("clear")) {
+  let condition = weather.toLowerCase();
+
+  if (condition.includes("clear") || condition.includes("sun")) {
     document.body.classList.add("sunny");
     sun.style.opacity = 1;
-  } else if (weather.includes("cloud")) {
+  } 
+  else if (condition.includes("cloud")) {
     document.body.classList.add("cloudy");
-    sun.style.opacity = 0.5;
-    clouds.forEach(c => c.style.opacity = 0.6);
-  } else if (weather.includes("rain") || weather.includes("drizzle")) {
+    sun.style.opacity = 0.4;
+    clouds.forEach(c => c.style.opacity = 0.85);
+  } 
+  else if (condition.includes("rain") || condition.includes("drizzle")) {
     document.body.classList.add("rainy");
     rain.style.opacity = 1;
-    clouds.forEach(c => c.style.opacity = 0.8);
-  } else if (weather.includes("storm") || weather.includes("thunder")) {
+    clouds.forEach(c => c.style.opacity = 0.9);
+  } 
+  else if (condition.includes("storm") || condition.includes("thunder")) {
     document.body.classList.add("storm");
     rain.style.opacity = 1;
     lightning.style.opacity = 1;
     clouds.forEach(c => c.style.opacity = 1);
-  } else {
+  } 
+  else {
     document.body.classList.add("clear");
+    sun.style.opacity = 1;
   }
 }
