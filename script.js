@@ -41,9 +41,9 @@ window.onload = () => {
 
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("light");
-  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+  const isLight = document.body.classList.contains("light");
+  localStorage.setItem("theme", isLight ? "light" : "dark");
 });
-
 unitToggle.addEventListener("change", () => {
   currentUnit = unitToggle.value;
   const city = cityInput.value.trim();
