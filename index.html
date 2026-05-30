@@ -7,11 +7,14 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="https://openweathermap.org/img/wn/01d.png" />
+  <!-- FontAwesome for cleaner UI icons instead of emojis if you want them later -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script defer src="script.js"></script>
 </head>
 <body>
-  <!-- Animated Weather Background -->
-  <div id="weather-animation">
+  
+  <!-- Dynamic Atmospheric Background Canvas/Container -->
+  <div id="weather-animation" class="weather-bg">
     <div class="sun"></div>
     <div class="cloud cloud1"></div>
     <div class="cloud cloud2"></div>
@@ -19,41 +22,111 @@
     <div class="lightning"></div>
   </div>
 
-  <div class="container">
-    <header>
-      <h1>🌤 WeatherNow</h1>
+  <!-- Main App Wrapper -->
+  <main class="app-container">
+    
+    <!-- Top Bar Control Panel -->
+    <header class="app-header">
+      <h1 class="brand"><i class="fa-solid fa-cloud-sun icon-margin"></i>WeatherNow</h1>
       <div class="controls">
-        <button id="themeToggle" title="Toggle Dark/Light Mode">🌓</button>
-        <select id="unitToggle" title="Temperature Unit">
-          <option value="metric">°C</option>
-          <option value="imperial">°F</option>
-        </select>
+        <button id="themeToggle" class="btn-icon" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <div class="select-wrapper">
+          <select id="unitToggle" aria-label="Temperature Unit" title="Temperature Unit">
+            <option value="metric">°C</option>
+            <option value="imperial">°F</option>
+          </select>
+        </div>
       </div>
     </header>
 
-    <div class="search-bar">
-      <input type="text" id="cityInput" placeholder="Enter a city..." />
-      <button id="searchBtn" title="Search">🔍</button>
-    </div>
-
-    <div id="loader" class="loader hidden"></div>
-
-    <section id="currentWeather" class="card hidden"></section>
-
-    <section id="forecast" class="forecast hidden">
-      <h2>5-Day Forecast</h2>
-      <div id="forecastCards" class="forecast-cards"></div>
+    <!-- Unified Search Widget -->
+    <section class="search-section">
+      <div class="search-bar">
+        <input type="text" id="cityInput" placeholder="Search for a city..." autocomplete="off" />
+        <button id="searchBtn" class="btn-search" aria-label="Search City" title="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
     </section>
 
-    <footer>
-      <p>Made by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank">GitHub</a></p>
+    <!-- State Indicator: Loading -->
+    <div id="loader" class="loader-container hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Active Weather Display Panel -->
+    <section id="currentWeather" class="weather-display-card">
+      <!-- 
+        Your JavaScript should dynamically target this card 
+        and render the following clean semantic structure:
+      -->
+      <h2 class="location-title">Anand, IN</h2>
+      
+      <div class="weather-visual">
+        <!-- Rendered weather icon wrapper -->
+        <div class="sky-icon-wrapper">
+          <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear sky" class="weather-icon-img" />
+        </div> 
+        <p class="weather-desc"><strong>Clear</strong> • clear sky</p>
+      </div>
+
+      <ul class="weather-details-grid">
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-temperature-half"></i> Temperature</span>
+          <strong class="detail-value">38.94°C</strong>
+        </li>
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-faucet-drip"></i> Feels Like</span>
+          <strong class="detail-value">41.13°C</strong>
+        </li>
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-droplet"></i> Humidity</span>
+          <strong class="detail-value">30%</strong>
+        </li>
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-wind"></i> Wind Speed</span>
+          <strong class="detail-value">7.83 m/s</strong>
+        </li>
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-gauge"></i> Pressure</span>
+          <strong class="detail-value">1005 hPa</strong>
+        </li>
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-sun"></i> Sunrise</span>
+          <strong class="detail-value">5:53 AM</strong>
+        </li>
+        <li>
+          <span class="detail-label"><i class="fa-solid fa-moon"></i> Sunset</span>
+          <strong class="detail-value">7:17 PM</strong>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Outlook Segment -->
+    <section id="forecast" class="forecast-section hidden">
+      <h3 class="section-title">5-Day Forecast</h3>
+      <div id="forecastCards" class="forecast-grid">
+        <!-- JS inserts forecast columns here -->
+      </div>
+    </section>
+
+    <!-- Global Footer -->
+    <footer class="app-footer">
+      <p>Made with ❤️ by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a></p>
     </footer>
-  </div>
-    <script>
+
+  </main>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker Registered"))
-        .catch(err => console.error("Service Worker registration failed:", err));
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .then(reg => console.log("✅ Service Worker active:", reg.scope))
+          .catch(err => console.error("❌ Service Worker failed:", err));
+      });
     }
   </script>
 </body>
