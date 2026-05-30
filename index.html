@@ -23,7 +23,7 @@
     <header>
       <h1>🌤 WeatherNow</h1>
       <div class="controls">
-        <button id="themeToggle" title="Toggle Dark/Light Mode">🌓</button>
+        <button id="themeToggle" title="Toggle Theme">🌓</button>
         <select id="unitToggle" title="Temperature Unit">
           <option value="metric">°C</option>
           <option value="imperial">°F</option>
@@ -32,24 +32,31 @@
     </header>
 
     <div class="search-bar">
-      <input type="text" id="cityInput" placeholder="Enter a city..." />
-      <button id="searchBtn" title="Search">🔍</button>
+      <input type="text" id="cityInput" placeholder="Enter city name..." />
+      <button id="searchBtn">🔍</button>
     </div>
 
     <div id="loader" class="loader hidden"></div>
 
-    <section id="currentWeather" class="card hidden"></section>
+    <div class="main-content">
+      <!-- Current Weather -->
+      <section id="currentWeather" class="hidden"></section>
 
-    <section id="forecast" class="forecast hidden">
-      <h2>5-Day Forecast</h2>
-      <div id="forecastCards" class="forecast-cards"></div>
-    </section>
+      <!-- Right Panel -->
+      <div class="right-panel">
+        <section id="forecast" class="forecast hidden">
+          <h2>5-Day Forecast</h2>
+          <div id="forecastCards" class="forecast-cards"></div>
+        </section>
+      </div>
+    </div>
 
     <footer>
       <p>Made by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank">GitHub</a></p>
     </footer>
   </div>
-    <script>
+
+  <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("✅ Service Worker Registered"))
