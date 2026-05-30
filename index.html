@@ -10,7 +10,7 @@
   <script defer src="script.js"></script>
 </head>
 <body>
-  <!-- Animated Weather Background -->
+  <!-- Dynamic Weather Background -->
   <div id="weather-animation">
     <div class="sun"></div>
     <div class="cloud cloud1"></div>
@@ -21,10 +21,12 @@
 
   <div class="container">
     <header>
-      <h1>🌤 WeatherNow</h1>
+      <div class="location">
+        <h1 id="cityName">Loading...</h1>
+      </div>
       <div class="controls">
         <button id="themeToggle" title="Toggle Theme">🌓</button>
-        <select id="unitToggle" title="Temperature Unit">
+        <select id="unitToggle">
           <option value="metric">°C</option>
           <option value="imperial">°F</option>
         </select>
@@ -32,36 +34,24 @@
     </header>
 
     <div class="search-bar">
-      <input type="text" id="cityInput" placeholder="Enter city name..." />
+      <input type="text" id="cityInput" placeholder="Search city..." />
       <button id="searchBtn">🔍</button>
     </div>
 
     <div id="loader" class="loader hidden"></div>
 
-    <div class="main-content">
-      <!-- Current Weather -->
-      <section id="currentWeather" class="hidden"></section>
+    <!-- Current Weather - Samsung Style -->
+    <section id="currentWeather" class="current-weather hidden"></section>
 
-      <!-- Right Panel -->
-      <div class="right-panel">
-        <section id="forecast" class="forecast hidden">
-          <h2>5-Day Forecast</h2>
-          <div id="forecastCards" class="forecast-cards"></div>
-        </section>
-      </div>
-    </div>
+    <!-- Forecast -->
+    <section id="forecast" class="forecast hidden">
+      <h2>5-Day Forecast</h2>
+      <div id="forecastCards" class="forecast-cards"></div>
+    </section>
 
     <footer>
-      <p>Made by <strong>Sajidali Momin</strong> | <a href="https://github.com/sajidali440" target="_blank">GitHub</a></p>
+      <p>Made by Sajidali Momin</p>
     </footer>
   </div>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker Registered"))
-        .catch(err => console.error("Service Worker registration failed:", err));
-    }
-  </script>
 </body>
 </html>
