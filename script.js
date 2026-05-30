@@ -79,17 +79,18 @@ function renderCurrentWeather(data) {
     <div class="temp">${Math.round(data.main.temp)}°</div>
     <div class="description">${data.weather[0].description}</div>
     
-    <ul class="weather-list">
-      <li><span>Feels Like</span> <strong>${Math.round(data.main.feels_like)}${unit}</strong></li>
-      <li><span>Humidity</span> <strong>${data.main.humidity}%</strong></li>
-      <li><span>Wind</span> <strong>${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</strong></li>
-      <li><span>Pressure</span> <strong>${data.main.pressure} hPa</strong></li>
-      <li><span>Sunrise</span> <strong>${formatTime(data.sys.sunrise, data.timezone)}</strong></li>
-      <li><span>Sunset</span> <strong>${formatTime(data.sys.sunset, data.timezone)}</strong></li>
-    </ul>
+    <div class="details">
+      <div><span>Feels Like</span> <strong>${Math.round(data.main.feels_like)}${unit}</strong></div>
+      <div><span>Humidity</span> <strong>${data.main.humidity}%</strong></div>
+      <div><span>Wind</span> <strong>${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</strong></div>
+      <div><span>Pressure</span> <strong>${data.main.pressure} hPa</strong></div>
+      <div><span>Sunrise</span> <strong>${formatTime(data.sys.sunrise, data.timezone)}</strong></div>
+      <div><span>Sunset</span> <strong>${formatTime(data.sys.sunset, data.timezone)}</strong></div>
+    </div>
   `;
   currentWeather.classList.remove("hidden");
 }
+
 async function fetchForecast(lat, lon) {
   try {
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${currentUnit}`;
@@ -132,14 +133,13 @@ function extractDailyForecast(list) {
   return Object.values(dailyMap).slice(0, 5);
 }
 
-// UPDATED FUNCTION FOR 12-HOUR TIME WITH AM/PM
 function formatTime(timestamp, timezoneOffset) {
   const date = new Date((timestamp + timezoneOffset) * 1000);
   let hours = date.getUTCHours();
   let minutes = date.getUTCMinutes();
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
-  hours = hours ? hours : 12; // hour '0' should be '12'
+  hours = hours ? hours : 12;
   minutes = minutes < 10 ? '0' + minutes : minutes;
   return `${hours}:${minutes} ${ampm}`;
 }
@@ -155,14 +155,13 @@ function hideLoader() {
 }
 
 function showError(message) {
-  currentWeather.innerHTML = `<p style="color: red;">${message}</p>`;
+  currentWeather.innerHTML = `<p style="color: #ef4444; text-align:center; padding:40px;">${message}</p>`;
   currentWeather.classList.remove("hidden");
 }
 
 function setWeatherBackground(weather) {
-  // Reset all
   document.body.classList.remove("sunny", "cloudy", "rainy", "storm", "clear");
-  
+
   const sun = document.querySelector(".sun");
   const clouds = document.querySelectorAll(".cloud");
   const rain = document.querySelector(".rain");
@@ -173,29 +172,23 @@ function setWeatherBackground(weather) {
   rain.style.opacity = 0;
   lightning.style.opacity = 0;
 
-  let condition = weather.toLowerCase();
-
-  if (condition.includes("clear") || condition.includes("sun")) {
+  if (weather.includes("clear") || weather.includes("sun")) {
     document.body.classList.add("sunny");
     sun.style.opacity = 1;
-  } 
-  else if (condition.includes("cloud")) {
+  } else if (weather.includes("cloud")) {
     document.body.classList.add("cloudy");
-    sun.style.opacity = 0.4;
+    sun.style.opacity = 0.5;
     clouds.forEach(c => c.style.opacity = 0.85);
-  } 
-  else if (condition.includes("rain") || condition.includes("drizzle")) {
+  } else if (weather.includes("rain") || weather.includes("drizzle")) {
     document.body.classList.add("rainy");
     rain.style.opacity = 1;
     clouds.forEach(c => c.style.opacity = 0.9);
-  } 
-  else if (condition.includes("storm") || condition.includes("thunder")) {
+  } else if (weather.includes("storm") || weather.includes("thunder")) {
     document.body.classList.add("storm");
     rain.style.opacity = 1;
     lightning.style.opacity = 1;
     clouds.forEach(c => c.style.opacity = 1);
-  } 
-  else {
+  } else {
     document.body.classList.add("clear");
     sun.style.opacity = 1;
   }
