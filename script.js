@@ -70,26 +70,26 @@ async function fetchWeatherByCity(city) {
 }
 
 function renderCurrentWeather(data) {
-  const icon = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+  const icon = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
   const unit = currentUnit === "metric" ? "°C" : "°F";
 
   currentWeather.innerHTML = `
     <h2>${data.name}, ${data.sys.country}</h2>
-    <img src="${icon}" alt="${data.weather[0].description}" />
+    <img src="${icon}" alt="${data.weather[0].description}" class="weather-icon" />
+    <div class="temp">${Math.round(data.main.temp)}°</div>
+    <div class="description">${data.weather[0].description}</div>
+    
     <ul class="weather-list">
-      <li><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</li>
-      <li>Temperature: ${data.main.temp}${unit}</li>
-      <li>Feels Like: ${data.main.feels_like}${unit}</li>
-      <li>Humidity: ${data.main.humidity}%</li>
-      <li>Wind: ${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</li>
-      <li>Pressure: ${data.main.pressure} hPa</li>
-      <li>Sunrise: ${formatTime(data.sys.sunrise, data.timezone)}</li>
-      <li>Sunset: ${formatTime(data.sys.sunset, data.timezone)}</li>
+      <li><span>Feels Like</span> <strong>${Math.round(data.main.feels_like)}${unit}</strong></li>
+      <li><span>Humidity</span> <strong>${data.main.humidity}%</strong></li>
+      <li><span>Wind</span> <strong>${data.wind.speed} ${currentUnit === "metric" ? "m/s" : "mph"}</strong></li>
+      <li><span>Pressure</span> <strong>${data.main.pressure} hPa</strong></li>
+      <li><span>Sunrise</span> <strong>${formatTime(data.sys.sunrise, data.timezone)}</strong></li>
+      <li><span>Sunset</span> <strong>${formatTime(data.sys.sunset, data.timezone)}</strong></li>
     </ul>
   `;
   currentWeather.classList.remove("hidden");
 }
-
 async function fetchForecast(lat, lon) {
   try {
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${currentUnit}`;
