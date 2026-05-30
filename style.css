@@ -184,3 +184,62 @@ body.clear {
 body.storm {
   background: linear-gradient(to top right, #3a3a3a, #1f1f1f);
 }
+/* Container Card */
+.weather-card {
+  background: rgba(48, 36, 33, 0.95); /* Keeping your dark theme, or use rgba(255,255,255,0.1) for glassmorphism */
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 450px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header */
+.weather-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Icon & Description Centering */
+.weather-icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sky-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #e67e22; /* Your orange circle */
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+
+/* CRITICAL FIX: The Details List */
+.weather-details {
+  list-style: none; /* Removes the stray bullet points */
+  padding: 0;       /* Removes default browser padding */
+  margin: 0;
+}
+
+.weather-details li {
+  display: flex;
+  justify-content: space-between; /* Pushes label to left, value to right */
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle divider */
+  font-size: 1rem;
+}
+
+/* Remove border from the last item */
+.weather-details li:last-child {
+  border-bottom: none;
+}
+
+/* Label styling */
+.weather-details li span {
+  color: #ccc; /* Slightly muted color for labels */
+}
