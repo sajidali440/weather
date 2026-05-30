@@ -12,6 +12,7 @@ const cityNameHeader = document.getElementById("cityName");
 
 let currentUnit = unitToggle.value;
 
+// Load saved theme
 window.onload = () => {
   if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light");
@@ -25,13 +26,15 @@ window.onload = () => {
         const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${currentUnit}`;
         const response = await fetch(url);
         const data = await response.json();
+        
         cityInput.value = data.name;
         cityNameHeader.textContent = `${data.name}, ${data.sys.country}`;
+        
         renderCurrentWeather(data);
         fetchForecast(latitude, longitude);
         setWeatherBackground(data.weather[0].main.toLowerCase());
       } catch (err) {
-        showError("Failed to get location weather");
+        showError("Failed to load weather from your location.");
       } finally {
         hideLoader();
       }
@@ -39,17 +42,21 @@ window.onload = () => {
   }
 };
 
+// Theme Toggle (Fixed)
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("light");
   const isLight = document.body.classList.contains("light");
   localStorage.setItem("theme", isLight ? "light" : "dark");
 });
+
+// Unit Toggle
 unitToggle.addEventListener("change", () => {
   currentUnit = unitToggle.value;
   const city = cityInput.value.trim();
   if (city) fetchWeatherByCity(city);
 });
 
+// Search
 searchBtn.addEventListener("click", () => {
   const city = cityInput.value.trim();
   if (city) fetchWeatherByCity(city);
@@ -61,12 +68,14 @@ async function fetchWeatherByCity(city) {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${currentUnit}`;
     const response = await fetch(url);
     const data = await response.json();
+    
     cityNameHeader.textContent = `${data.name}, ${data.sys.country}`;
+    
     renderCurrentWeather(data);
     fetchForecast(data.coord.lat, data.coord.lon);
     setWeatherBackground(data.weather[0].main.toLowerCase());
   } catch (err) {
-    showError("City not found");
+    showError("City not found. Try another.");
   } finally {
     hideLoader();
   }
@@ -122,7 +131,7 @@ async function fetchForecast(lat, lon) {
 
     forecastSection.classList.remove("hidden");
   } catch (e) {
-    console.log("Forecast load failed");
+    console.log("Forecast could not be loaded");
   }
 }
 
@@ -140,16 +149,6 @@ function extractDailyForecast(list) {
     }
   });
   return Object.values(dailyMap).slice(0, 5);
-}
-
-function formatTime(timestamp, timezoneOffset) {
-  const date = new Date((timestamp + timezoneOffset) * 1000);
-  let hours = date.getUTCHours();
-  let minutes = date.getUTCMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  return `${hours}:${minutes} ${ampm}`;
 }
 
 function showLoader() {
